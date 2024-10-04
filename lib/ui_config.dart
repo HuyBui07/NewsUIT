@@ -20,6 +20,12 @@ class LightModeColors {
   static const Color commonFadedText = Color(0xFF3C3C43);
   static const Color commonDarkText = Color(0xFFFFFFFF);
 
+  static const Color chatBubbleBackground = Color(0xFF312D3B);
+  static const Color chatBubbleText = Color(0xFFFFFFFF);
+  static const Color chatBubbleBackgroundBlueish = Color(0xFF1B9AEA);
+  static const Color chatBubbleTextBlueish = Color(0xFFFFFFFF);
+  static const Color referenceText = Color(0xFF631BE1);
+
   static const Color background = Color(0xFFFFFFFF);
   static const Color buttonCommon = Color(0xFFFFFFFF);
   static const Color divider = Color(0xFFE6E6E6);
@@ -43,6 +49,12 @@ class DarkModeColors {
   static const Color commonHeaderText = Color(0xFFFFFFFF);
   static const Color commonFadedText = Color(0xFFBEBEBE);
   static const Color commonDarkText = Color(0xFF000000);
+
+  static const Color chatBubbleBackground = Color(0xFF312D3B);
+  static const Color chatBubbleText = Color(0xFFFFFFFF);
+  static const Color chatBubbleBackgroundBlueish = Color(0xFF8C8598);
+  static const Color chatBubbleTextBlueish = Color(0xFFFFFFFF);
+  static const Color referenceText = Color(0xFF8C8598);
 
   static const Color background = Color(0xFF121212);
   static const Color buttonCommon = Color(0xFF2C2C2C);
