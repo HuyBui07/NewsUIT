@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_uit/apiController/deadlineFetch.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:news_uit/screens/helper_screen.dart';
 import 'screens/deadline_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
 import 'screens/testscreen.dart';
@@ -23,7 +22,7 @@ class _MainAppState extends State<MainApp> {
   // List of Screens to display for each tab
   final List<Widget> _screens = [
     Screen2(),
-    Screen2(),
+    ChatWithPDF(),
     DeadlineScreen(),
     PopupLogin(afterLogin: () {}),
   ];
@@ -40,15 +39,13 @@ class _MainAppState extends State<MainApp> {
       title: 'UITils',
       home: Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.menu),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                // Logic to open search screen
-              },
-            ),
-          ],
+          title: Center(
+              child: const Text('UITils',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+          backgroundColor: Colors.blue,
         ),
         body: _screens[_currentIndex], // Display the current selected screen
         bottomNavigationBar: BottomNavBar(
