@@ -169,6 +169,7 @@ class DeadlineService {
         print('Not logged in');
         return [];
       }
+
       final sessKey = await _fetchSessionKey();
       final currentYear = DateTime.now().year;
 
@@ -198,31 +199,10 @@ class DeadlineService {
       final data = response.data;
       List<Map<String, dynamic>> deadlines = [];
 
-      data[0]['data']['weeks'].forEach((week) {
-        week['days'].forEach((day) {
-          day['events'].forEach((event) async {
-            final eventUrl = event['url']; // Extract event URL
-            String submitted = "Pending";
-
-            // Check submission status only if the flag is true
-            // If subCheck is true, always set to submitted.
-            // else, if before deadline = Pending
-            // else, late
-            if (checkSubmission) {
-              bool subCheck = await _checkSubmitted(eventUrl);
-              if (subCheck) {
-                submitted = "Submitted";
-              } else {
-                DateTime deadline = DateTime.fromMillisecondsSinceEpoch(
-                    event['timesort'] * 1000);
-                if (DateTime.now().isBefore(deadline)) {
-                  submitted = "Pending";
-                } else {
-                  submitted = "Late";
-                }
-              }
-            }
-
+      // Collect all events first
+      for (var week in data[0]['data']['weeks']) {
+        for (var day in week['days']) {
+          for (var event in day['events']) {
             deadlines.add({
               'courseShortName': event['course']['shortname'],
               'courseName': event['course']['fullname'],
@@ -232,15 +212,38 @@ class DeadlineService {
               'HtmlDescription': event['description'],
               'description': htmlDescriptionToText(event['description']),
               'timestamp': event['timesort'],
-              'submitted': submitted, // Include submitted status
+              'submitted': "Not checked", // Initialize submitted status
               'year': currentYear,
               'month': month,
               'day': day['mday'],
-              'url': eventUrl,
+              'url': event['url'],
             });
-          });
-        });
-      });
+          }
+        }
+      }
+
+      // If submission checking is enabled, perform checks in parallel
+      if (checkSubmission) {
+        deadlines = await Future.wait(deadlines.map((deadline) async {
+          final eventUrl = deadline['url'];
+
+          try {
+            bool subCheck = await checkSubmitted(eventUrl);
+            String submitted = subCheck
+                ? "Submitted"
+                : DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(
+                        deadline['timestamp'] * 1000))
+                    ? "Pending"
+                    : "Late";
+            deadline['submitted'] = submitted;
+          } catch (e) {
+            print("Error checking submission for $eventUrl: $e");
+            deadline['submitted'] = "Error";
+          }
+
+          return deadline;
+        }).toList());
+      }
 
       return deadlines;
     } catch (e) {
@@ -254,7 +257,7 @@ class DeadlineService {
     return document.body!.text;
   }
 
-  Future<bool> _checkSubmitted(String eventUrl) async {
+  Future<bool> checkSubmitted(String eventUrl) async {
     try {
       final response = await _dio.get(eventUrl);
       final document = htmlParser.parse(response.data);
