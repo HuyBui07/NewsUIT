@@ -22,9 +22,9 @@ class _MainAppState extends State<MainApp> {
 
   // List of Screens to display for each tab
   final List<Widget> _screens = [
-    DeadlineScreen(),
     Screen2(),
-    Screen3(),
+    Screen2(),
+    DeadlineScreen(),
     PopupLogin(afterLogin: () {}),
   ];
 
@@ -37,7 +37,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bottom Navigation Example',
+      title: 'UITils',
       home: Scaffold(
         appBar: AppBar(
           leading: Icon(Icons.menu),

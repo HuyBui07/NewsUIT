@@ -14,6 +14,8 @@ class LightModeColors {
   static const Color deadlinePendingText = Color(0xFFFC850E);
   static const Color deadlineSubmittedText = Color(0xFF36FC71);
 
+  static const Color deadlineNotcheckedText = Color(0xFFBEBEBE);
+
   static const Color commonHeaderText = Color(0xFF000000);
   static const Color commonFadedText = Color(0xFF3C3C43);
   static const Color commonDarkText = Color(0xFFFFFFFF);
@@ -36,6 +38,7 @@ class DarkModeColors {
   static const Color deadlineOverdueText = Color(0xFFFF5A5A);
   static const Color deadlinePendingText = Color(0xFFFFB74D);
   static const Color deadlineSubmittedText = Color(0xFF66FF99);
+  static const Color deadlineNotcheckedText = Color(0xFFBEBEBE);
 
   static const Color commonHeaderText = Color(0xFFFFFFFF);
   static const Color commonFadedText = Color(0xFFBEBEBE);
