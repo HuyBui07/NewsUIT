@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<void> detectTag(String articleText) async {
-  const apiKey =
-      'chatgpt-api-key'; // Replace with your OpenAI API key
   final url = Uri.parse('https://api.openai.com/v1/completions');
 
   final response = await http.post(
     url,
     headers: {
-      'Authorization': 'Bearer $apiKey',
+      'Authorization': 'Bearer',
       'Content-Type': 'application/json',
     },
     body: jsonEncode({
