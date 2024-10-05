@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:news_uit/utils/detect_tags.dart';
 
 import "../constants.dart";
 
 // Widgets
-import "../widget/tag_box.dart";
-import '../widget/news_tile.dart';
+import "../widgets/tag_box.dart";
+import '../widgets/news_tile.dart';
+
+// APIS
+import '../apiControllers/news_fetch_api.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -39,64 +43,52 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   ];
 
-  final newItems = [
-    {
-      'title': 'Thông báo tuyển dụng thực tập công ty FPT',
-      'description': 'Description 1',
-      'imageUrl': 'https://picsum.photos/250?image=9',
-      'source': 'Source 1',
-      'publishedAt': 'Published At 1',
-    },
-    {
-      'title': 'Title 2',
-      'description': 'Description 2',
-      'imageUrl': 'https://picsum.photos/250?image=10',
-      'source': 'Source 2',
-      'publishedAt': 'Published At 2',
-    },
-    {
-      'title': 'Title 3',
-      'description': 'Description 3',
-      'imageUrl': 'https://picsum.photos/250?image=11',
-      'source': 'Source 3',
-      'publishedAt': 'Published At 3',
-    },
-    {
-      'title': 'Title 4',
-      'description': 'Description 4',
-      'imageUrl': 'https://picsum.photos/250?image=12',
-      'source': 'Source 4',
-      'publishedAt': 'Published At 4',
-    },
-    {
-      'title': 'Title 5',
-      'description': 'Description 5',
-      'imageUrl': 'https://picsum.photos/250?image=13',
-      'source': 'Source 5',
-      'publishedAt': 'Published At 5',
-    },
-    {
-      'title': 'Title 6',
-      'description': 'Description 6',
-      'imageUrl': 'https://picsum.photos/250?image=14',
-      'source': 'Source 6',
-      'publishedAt': 'Published At 6',
-    },
-    {
-      'title': 'Title 7',
-      'description': 'Description 7',
-      'imageUrl': 'https://picsum.photos/250?image=15',
-      'source': 'Source 7',
-      'publishedAt': 'Published At 7',
-    },
-    {
-      'title': 'Title 8',
-      'description': 'Description 8',
-      'imageUrl': 'https://picsum.photos/250?image=16',
-      'source': 'Source 8',
-      'publishedAt': 'Published At 8',
-    },
-  ];
+  var newItems = <Map<String, dynamic>>[];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNews();
+    detectTag(
+        "Thông báo về việc đào tạo song ngành trình độ đại học hệ chính quy");
+  }
+
+  void fetchNews() async {
+    var news = await NewsService.fetchNews();
+    setState(() {
+      newItems = news.map((news) {
+        return {
+          'title': news.title,
+          'description': news.body,
+          'imageUrl': 'https://picsum.photos/250?image=9',
+          'source': 'Source 1',
+          'publishedAt': news.publishedAt,
+          'about': news.about
+        };
+      }).toList();
+    });
+  }
+
+  void onSourceChange(String value) async {
+    setState(() => _selectedSource = value);
+
+    switch (value) {
+      case 'DAA':
+        fetchNews();
+        break;
+      case 'CNPM - se.uit.edu.vn':
+        fetchNews();
+        break;
+      case 'Sự kiện':
+        fetchNews();
+        break;
+      case 'Thông báo':
+        fetchNews();
+        break;
+      default:
+        fetchNews();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,8 +143,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     ),
                   ),
                   width: double.infinity,
-                  onSelected: (value) =>
-                      setState(() => _selectedSource = value!),
+                  onSelected: (value) => onSourceChange(value!),
                   initialSelection: _selectedSource,
                   dropdownMenuEntries: dropDownMenuEntries),
             ),
@@ -178,7 +169,7 @@ class _NewsScreenState extends State<NewsScreen> {
                         child: Divider(
                           thickness: 2,
                           color:
-                              Color(0xFFE6E6E6), // Adjust thickness as needed
+                              Color(0xFF87CEEB), // Adjust thickness as needed
                         ),
                       );
                     }
@@ -192,6 +183,7 @@ class _NewsScreenState extends State<NewsScreen> {
                         imageUrl: item['imageUrl'] as String,
                         source: item['source'] as String,
                         publishedAt: item['publishedAt'] as String,
+                        about: item['about'] as String,
                       ),
                     );
                   },

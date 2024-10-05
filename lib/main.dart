@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Screens
-import 'screen/news_screen.dart'; // Import another screen
+import 'screens/news_screen.dart'; // Import another screen
 
 void main() {
   runApp(const MainApp());

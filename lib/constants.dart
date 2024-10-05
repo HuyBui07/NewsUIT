@@ -1,5 +1,3 @@
-
-
 const List<String> newsTags = [
   'Học vụ',
   'Tuyển dụng',
@@ -7,9 +5,8 @@ const List<String> newsTags = [
 ];
 
 const dropDownMenuSourceOptions = [
-  'Tất cả',
-  'Tin tức',
+  'DAA',
+  'CNPM - se.uit.edu.vn',
   'Sự kiện',
   'Thông báo',
 ];
-
