@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 Future<void> detectTag(String articleText) async {
   const apiKey =
-      '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';
+      'chatgpt-api-key'; // Replace with your OpenAI API key
   final url = Uri.parse('https://api.openai.com/v1/completions');
 
   final response = await http.post(
