@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:news_uit/apiControllers/news_fetch_api.dart';
-import 'package:news_uit/utils/detect_tags.dart';
 
 import 'news_tag.dart';
 

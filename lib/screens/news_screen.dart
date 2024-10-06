@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:news_uit/utils/detect_tags.dart';
 
 import "../constants.dart";
 
@@ -49,8 +48,6 @@ class _NewsScreenState extends State<NewsScreen> {
   void initState() {
     super.initState();
     fetchNews();
-    detectTag(
-        "Thông báo về việc đào tạo song ngành trình độ đại học hệ chính quy");
   }
 
   void fetchNews() async {
