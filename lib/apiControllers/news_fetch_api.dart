@@ -44,6 +44,7 @@ class NewsService {
   }
 
   static Future<List<News>> fetchNews() async {
+    print('Fetching news');
     final response =
         await http.get(Uri.parse('https://daa.uit.edu.vn/thongbaochinhquy'));
     if (response.statusCode == 200) {
