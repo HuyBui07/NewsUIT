@@ -39,8 +39,8 @@ class _MainAppState extends State<MainApp> {
       title: 'UITils',
       home: Scaffold(
         appBar: AppBar(
-          title: Center(
-              child: const Text('UITils',
+          title: const Center(
+              child: Text('UITils',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
