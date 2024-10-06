@@ -7,6 +7,4 @@ const List<String> newsTags = [
 const dropDownMenuSourceOptions = [
   'DAA',
   'CNPM - se.uit.edu.vn',
-  'Sự kiện',
-  'Thông báo',
 ];

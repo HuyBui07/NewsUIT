@@ -1,63 +1,57 @@
 import 'package:flutter/material.dart';
-
-// Screens
-import 'screens/news_screen.dart'; // Import another screen
+import 'package:news_uit/screens/helper_screen.dart';
+import 'package:news_uit/screens/news_screen.dart';
+import 'screens/deadline_screen.dart';
+import 'widgets/bottom_nav_bar.dart';
+import 'screens/login_mini_screen.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
-    );
-  }
+  State<MainApp> createState() => _MainAppState();
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class _MainAppState extends State<MainApp> {
+  int _currentIndex = 0;
 
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  static final List<Widget> _widgetOptions = <Widget>[
-    NewsScreen() // Another screen
+  // List of Screens to display for each tab
+  final List<Widget> _screens = [
+    const NewsScreen(),
+    ChatWithPDF(),
+    DeadlineScreen(),
+    PopupLogin(afterLogin: () {}),
   ];
 
-  void _onItemTapped(int index) {
+  void _onTabTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _currentIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+    return MaterialApp(
+      title: 'UITils',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+              child: const Text('UITils',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+          backgroundColor: Colors.blue,
+        ),
+        body: _screens[_currentIndex], // Display the current selected screen
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+        ),
       ),
     );
   }
