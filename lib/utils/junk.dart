@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../apiController/deadlineFetch.dart';
+import '../apiControllers/deadlineFetch.dart';
 
 Future<void> selfCallLoginAndTestDeadline() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

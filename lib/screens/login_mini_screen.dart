@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import '../utils/junk.dart';
-import '../apiController/deadlineFetch.dart';
+import '../apiControllers/deadlineFetch.dart';
 
 //Testing login screen, remove later.
 class PopupLogin extends StatefulWidget {

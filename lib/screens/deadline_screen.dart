@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ui_config.dart';
-import '../apiController/deadlineFetch.dart';
+import '../apiControllers/deadlineFetch.dart';
 import '../utils/utils.dart';
 import '../widgets/deadline_item.dart';
 

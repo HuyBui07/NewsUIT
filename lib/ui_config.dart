@@ -60,3 +60,4 @@ class DarkModeColors {
   static const Color buttonCommon = Color(0xFF2C2C2C);
   static const Color divider = Color(0xFF333333);
 }
+

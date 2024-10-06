@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_uit/screens/helper_screen.dart';
+import 'package:news_uit/screens/news_screen.dart';
 import 'screens/deadline_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
-import 'screens/testscreen.dart';
 import 'screens/login_mini_screen.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class _MainAppState extends State<MainApp> {
 
   // List of Screens to display for each tab
   final List<Widget> _screens = [
-    Screen2(),
+    const NewsScreen(),
     ChatWithPDF(),
     DeadlineScreen(),
     PopupLogin(afterLogin: () {}),
