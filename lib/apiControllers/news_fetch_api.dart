@@ -2,7 +2,6 @@ import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
-
 class News {
   final String id;
   final String title;
@@ -43,10 +42,9 @@ class NewsService {
     return _newsService;
   }
 
-  static Future<List<News>> fetchNews() async {
-    print('Fetching news');
-    final response =
-        await http.get(Uri.parse('https://daa.uit.edu.vn/thongbaochinhquy'));
+  static Future<List<News>> fetchNews(int? pageNumber) async {
+    final response = await http.get(Uri.parse(
+        'https://daa.uit.edu.vn/thongbaochinhquy?page=${pageNumber}'));
     if (response.statusCode == 200) {
       Document document = parser.parse(response.body);
       List<Element> articles = document.getElementsByTagName('article');
@@ -54,20 +52,50 @@ class NewsService {
         Element? spanElement =
             article.querySelector('span[property="dc:date dc:created"]');
         String text = spanElement?.text ?? 'Unknown';
+        String title = article.getElementsByTagName('h2').first.text;
+        List<String> tags = categorizeNew(title);
 
         return News(
           id: article.attributes['id']!,
-          title: article.getElementsByTagName('h2').first.text,
+          title: title,
           body: article.getElementsByTagName('p').first.text,
           publishedAt: text,
-          tags: ['tag1', 'tag2'],
+          tags: tags,
           about: article.attributes['about']!,
         );
       }).toList();
+
       return news;
     } else {
       throw Exception('Failed to load news');
     }
+  }
+
+  static List<String> categorizeNew(String title) {
+    // Từ khóa theo từng loại tag
+    Map<String, List<String>> keywordTags = {
+      'Học vụ': ['lịch thi', 'kế hoạch', 'học phí'],
+      'Sự kiện': ['tuyển sinh', 'khóa học'],
+      'Thông báo': ['thông báo'],
+    };
+
+    List<String> tags = [];
+
+    // Quét title và thêm tag tương ứng
+    keywordTags.forEach((tag, keywords) {
+      for (var keyword in keywords) {
+        if (title.toLowerCase().contains(keyword.toLowerCase())) {
+          tags.add(tag);
+          break; // Ngừng sau khi tìm thấy từ khóa để tránh trùng lặp tag
+        }
+      }
+    });
+
+    if (tags.isEmpty) {
+      tags.add('Khác');
+    }
+
+    return tags;
   }
 
   static Future<String> fetchNewsContent(String about) async {

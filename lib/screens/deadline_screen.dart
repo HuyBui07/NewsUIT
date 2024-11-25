@@ -6,6 +6,8 @@ import '../utils/utils.dart';
 import '../widgets/deadline_item.dart';
 
 class DeadlineScreen extends StatefulWidget {
+  const DeadlineScreen({super.key});
+
   @override
   State<DeadlineScreen> createState() => _DeadlineScreenState();
 }

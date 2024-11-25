@@ -10,9 +10,11 @@ import 'package:path_provider/path_provider.dart';
 import '../ui_config.dart';
 
 //Used in x-api-key header
-const String APIKey = '';
+const String APIKey = 'sec_pecQb1g21Pk0SvQCSornBoMGlLfZ0sHX';
 
 class ChatWithPDF extends StatefulWidget {
+  const ChatWithPDF({super.key});
+
   @override
   _ChatWithPDFState createState() => _ChatWithPDFState();
 }
@@ -72,25 +74,25 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                 color: LightModeColors.buttonCommon,
                 borderRadius: BorderRadius.circular(10),
                 border:
-                Border.all(color: LightModeColors.navSelected, width: 1.5),
+                    Border.all(color: LightModeColors.navSelected, width: 1.5),
               ),
               child: Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
                 child: DropdownButton<String>(
                   value: selectedDocument,
-                  hint: Text('Select a topic',
+                  hint: const Text('Select a topic',
                       style: TextStyle(color: LightModeColors.navTextAndIcon)),
                   isExpanded: true,
                   underline: Container(),
-                  icon: Icon(Icons.arrow_drop_down,
+                  icon: const Icon(Icons.arrow_drop_down,
                       color: LightModeColors.navTextAndIcon),
                   items: documents.map((doc) {
                     return DropdownMenuItem<String>(
                       value: doc['sourceId'],
                       child: Text(doc['title']!,
                           style:
-                          TextStyle(color: LightModeColors.navTextAndIcon)),
+                              const TextStyle(color: LightModeColors.navTextAndIcon)),
                     );
                   }).toList(),
                   onChanged: (value) async {
@@ -99,7 +101,7 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                       sourceId = value!;
                     });
                     String assetPath = documents.firstWhere(
-                            (doc) => doc['sourceId'] == value)['pdfPath']!;
+                        (doc) => doc['sourceId'] == value)['pdfPath']!;
                     String pdfFilePath = await _loadPdfFromAssets(assetPath);
                     setState(() {
                       pdfPath = pdfFilePath;
@@ -116,24 +118,24 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
               children: [
                 pdfPath != null
                     ? PDFView(
-                  enableSwipe: true,
-                  filePath: pdfPath,
-                  onRender: (pages) {
-                    setState(() {});
-                  },
-                  onViewCreated: (controller) {
-                    _pdfViewController = controller;
-                  },
-                  onPageChanged: (page, total) {
-                    setState(() {
-                      currentPage = page;
-                    });
-                  },
-                )
-                    : Center(
-                    child: Text("Select a topic you want to ask about!",
-                        style: TextStyle(
-                            color: LightModeColors.navTextAndIcon))),
+                        enableSwipe: true,
+                        filePath: pdfPath,
+                        onRender: (pages) {
+                          setState(() {});
+                        },
+                        onViewCreated: (controller) {
+                          _pdfViewController = controller;
+                        },
+                        onPageChanged: (page, total) {
+                          setState(() {
+                            currentPage = page;
+                          });
+                        },
+                      )
+                    : const Center(
+                        child: Text("Select a topic you want to ask about!",
+                            style: TextStyle(
+                                color: LightModeColors.navTextAndIcon))),
 
                 // Divider to separate PDF and Chat Section
                 Positioned(
@@ -142,7 +144,7 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                   right: 0,
                   child: Container(
                     height: 8.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       boxShadow: [
                         BoxShadow(
                           color: LightModeColors.divider,
@@ -161,7 +163,7 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('Page: ${currentPage! + 1}',
-                  style: TextStyle(color: LightModeColors.navTextAndIcon)),
+                  style: const TextStyle(color: LightModeColors.navTextAndIcon)),
             ),
 
           // Chat Messages List
@@ -173,19 +175,19 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                 bool isUser = message['role'] == 'user';
                 return Align(
                   alignment:
-                  isUser ? Alignment.centerRight : Alignment.centerLeft,
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    padding: EdgeInsets.all(12),
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: LightModeColors.chatBubbleBackgroundBlueish,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
+                        topLeft: const Radius.circular(12),
+                        topRight: const Radius.circular(12),
                         bottomLeft:
-                        isUser ? Radius.circular(12) : Radius.circular(0),
+                            isUser ? const Radius.circular(12) : const Radius.circular(0),
                         bottomRight:
-                        isUser ? Radius.circular(0) : Radius.circular(12),
+                            isUser ? const Radius.circular(0) : const Radius.circular(12),
                       ),
                     ),
                     child: Column(
@@ -193,7 +195,7 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                       children: [
                         Text(message['content'],
                             softWrap: true,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: LightModeColors.chatBubbleTextBlueish)),
                         if (message['references'] != null)
                           Wrap(
@@ -224,8 +226,8 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
 
           // Sending Message Loading Indicator
           if (isBotTyping)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   CircularProgressIndicator(),
@@ -259,19 +261,19 @@ class _ChatWithPDFState extends State<ChatWithPDF> {
                 ),
                 IconButton(
                   icon: isSending
-                      ? CircularProgressIndicator()
-                      : Icon(Icons.send),
+                      ? const CircularProgressIndicator()
+                      : const Icon(Icons.send),
                   onPressed: selectedDocument == null
                       ? null
                       : () async {
-                    setState(() {
-                      isSending = true;
-                    });
-                    await _sendMessage(_controller.text);
-                    setState(() {
-                      isSending = false;
-                    });
-                  },
+                          setState(() {
+                            isSending = true;
+                          });
+                          await _sendMessage(_controller.text);
+                          setState(() {
+                            isSending = false;
+                          });
+                        },
                 ),
               ],
             ),

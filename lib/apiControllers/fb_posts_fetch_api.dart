@@ -1,6 +1,4 @@
-import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' as parser;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
@@ -37,13 +35,14 @@ class PostsService {
   static Future<List<Posts>> fetchFanPagePosts() async {
     print('Fetching posts');
     var accessToken =
-        "EAAH6R2ORlvEBO0wRsji9M32bZBZAGDpspwxB2dCpNJCCCe2bpTI7FBankBED4WCo2RHtOZC9Vw1mI5OpjceuhtKFiMpyFAjnNgGF5pZB3GtJZCycu517oWqBMlK0hQ8zre94L5ZA3m0D9vzO1OZBS7t27SRbfbpnSm1JsZAnYKb8dJZBoNZByltQrtepA3n6ZB8QxtmihqIozxhphw1urMZASluxAcgA";
+        "EAAH6R2ORlvEBO2phSiJJiIUNkdeTmFbTIjhBR9ggfhtmWt1IDkZCEVk1OZCyBGHikwl0hj9joMp79P94UiiMYYRfhl9UN4KHlEHdW9UJZBPROxOwwivj27JnNNuvZBoG1Ru0YLz9FFU68CZBocahE50bRMASgAKducZAqgExz3UeD1Os2s2ZC2vtMSyF5MKZCRKfZCtQstTujcx9tjoPqc9ZCihZCEJ";
 
     var pageId = "431464436719562";
 
     final url =
         'https://graph.facebook.com/$pageId/posts?fields=message,full_picture, created_time&access_token=$accessToken';
     final response = await http.get(Uri.parse(url));
+    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

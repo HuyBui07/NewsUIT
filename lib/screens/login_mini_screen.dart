@@ -13,7 +13,7 @@ import '../apiControllers/deadlineFetch.dart';
 class PopupLogin extends StatefulWidget {
   final Function afterLogin;
 
-  PopupLogin({required this.afterLogin});
+  const PopupLogin({super.key, required this.afterLogin});
 
   @override
   _PopupLoginState createState() => _PopupLoginState();
@@ -106,23 +106,23 @@ class _PopupLoginState extends State<PopupLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _loading
-                ? CircularProgressIndicator() // Show loading indicator
+                ? const CircularProgressIndicator() // Show loading indicator
                 : ElevatedButton(
                     onPressed: () async {
                       bool success = await login();
@@ -130,15 +130,15 @@ class _PopupLoginState extends State<PopupLogin> {
                         widget.afterLogin(); // Call after login if successful
                       }
                     },
-                    child: Text('Login with set credentials in CODE'),
+                    child: const Text('Login with set credentials in CODE'),
                   ),
             if (_error.isNotEmpty)
-              Text(_error, style: TextStyle(color: Colors.red)),
+              Text(_error, style: const TextStyle(color: Colors.red)),
             if (_successMessage.isNotEmpty)
-              Text(_successMessage, style: TextStyle(color: Colors.green)),
+              Text(_successMessage, style: const TextStyle(color: Colors.green)),
             // Log in with typed credentials
             _loading
-                ? CircularProgressIndicator() // Show loading indicator
+                ? const CircularProgressIndicator() // Show loading indicator
                 : ElevatedButton(
                     onPressed: () async {
                       bool success = await loginWithTypedCredentials();
@@ -146,13 +146,13 @@ class _PopupLoginState extends State<PopupLogin> {
                         widget.afterLogin(); // Call after login if successful
                       }
                     },
-                    child: Text('Log in with cred typed'),
+                    child: const Text('Log in with cred typed'),
                   ),
             if (_error.isNotEmpty)
-              Text(_error, style: TextStyle(color: Colors.red)),
+              Text(_error, style: const TextStyle(color: Colors.red)),
             if (_successMessage.isNotEmpty)
-              Text(_successMessage, style: TextStyle(color: Colors.green)),
-            SizedBox(height: 20),
+              Text(_successMessage, style: const TextStyle(color: Colors.green)),
+            const SizedBox(height: 20),
           ],
         ),
       ),
