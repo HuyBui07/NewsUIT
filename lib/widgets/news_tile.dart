@@ -13,7 +13,7 @@ class NewsTile extends StatefulWidget {
   final String? imageUrl;
   final String source;
   final String publishedAt;
-  final List<String> tags;
+  final List<String>? tags;
   final String about;
 
   const NewsTile({
@@ -180,10 +180,10 @@ class _NewsTileState extends State<NewsTile> {
                     ),
                     const SizedBox(height: 8.0),
                     Row(
-                      children: List.generate(widget.tags.length, (index) {
+                      children: List.generate(widget.tags?.length ?? 0, (index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 4.0),
-                          child: NewsTag(title: widget.tags[index]),
+                          child: NewsTag(title: widget.tags![index]),
                         );
                       }),
                     )

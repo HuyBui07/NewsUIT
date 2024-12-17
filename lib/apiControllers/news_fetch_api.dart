@@ -54,17 +54,25 @@ class NewsService {
         String text = spanElement?.text ?? 'Unknown';
         String title = article.getElementsByTagName('h2').first.text;
         List<String> tags = categorizeNew(title);
+        List<Element> pElements = article.getElementsByTagName('p');
+        String about = "";
+        if (pElements.isEmpty) {
+          about = "Bấm vào để xem thêm";
+        } else {
+          about = pElements.first.text;
+        }
 
         return News(
           id: article.attributes['id']!,
           title: title,
-          body: article.getElementsByTagName('p').first.text,
+          body: about,
           publishedAt: text,
           tags: tags,
           about: article.attributes['about']!,
         );
       }).toList();
 
+      print('Fetched ${news.length} news articles');
       return news;
     } else {
       throw Exception('Failed to load news');
