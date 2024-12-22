@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_uit/apiControllers/deadlineFetch.dart';
 import 'package:news_uit/screens/helper_screen.dart';
 import 'package:news_uit/screens/news_screen.dart';
 import 'screens/deadline_screen.dart';
@@ -22,7 +23,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int _currentIndex = 0;
   bool _isDarkMode = false;
-  bool _isLoggedIn = false;
+  bool _isLoggedIn = DeadlineService().isLoggedIn;
 
   // Toggle the theme
   void _toggleTheme() {
@@ -37,32 +38,16 @@ class _MainAppState extends State<MainApp> {
       context: context,
       builder: (context) => Builder(
         builder: (dialogContext) => PopupLogin(
-          afterLogin: () {
+          afterLogin: () async {
+            print('Logged in. Setting state to true');
             setState(() {
               _isLoggedIn = true;
             });
+            print('Logged state: $_isLoggedIn');
           },
         ),
       ),
     );
-  }
-
-  // List of Screens to display for each tab
-  late final List<Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      const NewsScreen(),
-      ChatWithPDF(),
-      DeadlineScreen(),
-      SettingsScreen(
-        isLoggedIn: _isLoggedIn,
-        toggleTheme: _toggleTheme,
-        showLoginScreen: _showLoginScreen,
-      ),
-    ];
   }
 
   void _onTabTapped(int index) {
@@ -73,20 +58,42 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      const NewsScreen(),
+      ChatWithPDF(),
+      DeadlineScreen(),
+      SettingsScreen(
+        isLoggedIn: _isLoggedIn,
+        toggleTheme: _toggleTheme,
+        showLoginScreen: _showLoginScreen,
+        logout: () async {
+          await DeadlineService().logout();
+          setState(() {
+            _isLoggedIn = false;
+          });
+        },
+      ),
+    ];
+
     return MaterialApp(
       title: 'UITils',
+      debugShowCheckedModeBanner: false,
       theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          title: const Center(
-              child: Text('UITils',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white))),
+          title: const Text(
+            'UITils',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           backgroundColor: Colors.blue,
+          centerTitle: true,
         ),
-        body: _screens[_currentIndex], // Display the current selected screen
+        body:
+            screens[_currentIndex], // Use the dynamically built list of screens
         bottomNavigationBar: BottomNavBar(
           currentIndex: _currentIndex,
           onTap: _onTabTapped,

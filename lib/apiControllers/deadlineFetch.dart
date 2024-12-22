@@ -109,6 +109,7 @@ class DeadlineService {
         print('Login failed');
         return false;
       }
+      print("Login function: logged in is true");
 
       // Store credentials if requested
       if (storeCredentials) {
@@ -305,5 +306,13 @@ class DeadlineService {
     if (username != null && password != null) {
       await login(username, password);
     }
+  }
+
+  // Clear stored credentials and logout
+  Future<void> _logoutAndClearCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('moodleUsername');
+    prefs.remove('moodlePassword');
+    await logout();
   }
 }

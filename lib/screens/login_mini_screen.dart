@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:news_uit/apiControllers/deadlineFetch.dart';
 import 'package:news_uit/utils/junk.dart';
 
 class PopupLogin extends StatefulWidget {
@@ -29,17 +30,17 @@ class _PopupLoginState extends State<PopupLogin> {
     bool success = false;
 
     try {
-      // Using LoginSample2 for login logic
-      success = await LoginInMoodle(
+      success = await DeadlineService().login(
         _usernameController.text,
         _passwordController.text,
+        storeCredentials: true,
       );
       if (success) {
         setState(() {
           _successMessage = 'Login successful!';
         });
         widget.afterLogin(); // Notify parent widget of successful login
-        Navigator.of(context).pop(); // Close the popup
+        Future.microtask(() => Navigator.of(context).pop());
       } else {
         setState(() {
           _error = 'Invalid username or password.';
