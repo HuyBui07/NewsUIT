@@ -18,8 +18,10 @@ Future<void> selfCallLoginAndTestDeadline() async {
     if (loginSuccess) {
       // Fetch deadlines for a specific month (e.g., May = 5)
       print("Calling for deadlines");
-      int deadlineMonth = 10;
-      final deadlines = await deadlineService.fetchDeadlines(deadlineMonth);
+      int deadlineMonth = DateTime.now().month;
+      int deadlineYear = DateTime.now().year;
+      final deadlines =
+          await deadlineService.fetchDeadlines(deadlineMonth, deadlineYear);
 
       // Print fetched deadlines
       deadlines.forEach((deadline) {
@@ -62,7 +64,7 @@ Future<bool> LoginSample() async {
   return false;
 }
 
-Future<bool> LoginSample2(String username, String password) async {
+Future<bool> LoginInMoodle(String username, String password) async {
   try {
     final loginSuccess = await DeadlineService()
         .login(username, password, storeCredentials: true);
