@@ -78,8 +78,8 @@ class _MainAppState extends State<MainApp> {
       theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          title: Center(
-              child: const Text('UITils',
+          title: const Center(
+              child: Text('UITils',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
