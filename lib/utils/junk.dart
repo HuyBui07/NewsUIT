@@ -4,8 +4,8 @@ import '../apiControllers/deadlineFetch.dart';
 
 Future<void> selfCallLoginAndTestDeadline() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  final username = "s";
-  final password = "a@#";
+  const username = "s";
+  const password = "a@#";
 
   // Initialize DeadlineService
   var deadlineService = DeadlineService();
@@ -24,7 +24,7 @@ Future<void> selfCallLoginAndTestDeadline() async {
           await deadlineService.fetchDeadlines(deadlineMonth, deadlineYear);
 
       // Print fetched deadlines
-      deadlines.forEach((deadline) {
+      for (var deadline in deadlines) {
         print('Course: ${deadline['course-event-name']}');
         print('Title: ${deadline['title']}');
         print(
@@ -34,7 +34,7 @@ Future<void> selfCallLoginAndTestDeadline() async {
         print('URL: ${deadline['url']}');
         //Add attachment later
         print('----------');
-      });
+      }
     } else {
       print('[DL Screen] Login failed');
     }
@@ -46,8 +46,8 @@ Future<void> selfCallLoginAndTestDeadline() async {
 }
 
 Future<bool> LoginSample() async {
-  final username = "a";
-  final password = "a@#";
+  const username = "a";
+  const password = "a@#";
   try {
     final loginSuccess = await DeadlineService()
         .login(username, password, storeCredentials: true);

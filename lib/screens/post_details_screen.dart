@@ -7,7 +7,7 @@ class PostDetailsScreen extends StatelessWidget {
   final String date;
   final String imageUrl;
 
-  PostDetailsScreen({
+  const PostDetailsScreen({super.key, 
     required this.description,
     required this.date,
     required this.imageUrl,

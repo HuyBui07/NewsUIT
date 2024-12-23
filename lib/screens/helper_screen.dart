@@ -12,6 +12,8 @@ import '../ui_config.dart';
 const String APIKey = 'sec_pecQb1g21Pk0SvQCSornBoMGlLfZ0sHX';
 
 class ChatWithPDF extends StatefulWidget {
+  const ChatWithPDF({super.key});
+
   @override
   _ChatWithPDFState createState() => _ChatWithPDFState();
 }

@@ -9,7 +9,7 @@ import 'dart:io';
 
 class DeadlineService {
   static final DeadlineService _instance = DeadlineService._internal();
-  static final String baseUrl = 'https://courses.uit.edu.vn';
+  static const String baseUrl = 'https://courses.uit.edu.vn';
 
   static late Dio _dio;
   static late CookieJar _cookieJar;

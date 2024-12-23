@@ -12,6 +12,8 @@ import '../apiControllers/fb_posts_fetch_api.dart';
 
 // Define the global variable
 List<Map<String, dynamic>> newItems = [];
+List<Map<String, dynamic>> newItemsBuffer = [];
+List<Map<String, dynamic>> postItemsBuffer = [];
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -31,7 +33,11 @@ class _NewsScreenState extends State<NewsScreen> {
 
   String _selectedSource = dropDownMenuSourceOptions[0];
 
-  final tagItems = [
+  List<Map<String, dynamic>> tagItems = [
+    {
+      'icon': Icons.star,
+      'tagTitle': 'Tất cả',
+    },
     {
       'icon': Icons.star,
       'tagTitle': 'Học vụ',
@@ -43,31 +49,86 @@ class _NewsScreenState extends State<NewsScreen> {
     {
       'icon': Icons.star,
       'tagTitle': 'Thông báo',
-    }
+    },
+    {
+      'icon': Icons.star,
+      'tagTitle': 'Sự kiện',
+    },
+    {'icon': Icons.star, 'tagTitle': 'Khác'}
   ];
+
+
+  late String filterOption;
+  int pageNumber = 0;
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    filterOption = tagItems[0]['tagTitle'] as String;
     fetchNews();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (_selectedSource == 'SeExpress') {
+          return;
+        }
+        pageNumber++;
+        isLoading = true;
+        fetchMoreNews();
+      } else {
+        isLoading = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void fetchNews() async {
     if (newItems.isNotEmpty) {
       return;
     }
-    var news = await NewsService.fetchNews();
+    var news = await NewsService.fetchNews(pageNumber);
 
     setState(() {
-      newItems = news.map((news) {
+      newItems = news.map((newsItem) {
         return {
-          'title': news.title,
-          'description': news.body,
+          'title': newsItem.title,
+          'description': newsItem.body,
           'source': 'DAA',
-          'publishedAt': news.publishedAt,
-          'about': news.about
+          'publishedAt': newsItem.publishedAt,
+          'tags': newsItem.tags,
+          'about': newsItem.about
         };
       }).toList();
+      newItemsBuffer = newItems;
+    });
+  }
+
+  void fetchMoreNews() async {
+    if (_selectedSource != 'DAA') {
+      return;
+    }
+
+    var news = await NewsService.fetchNews(pageNumber);
+
+    setState(() {
+      newItems.addAll(news.map((newsItem) {
+        return {
+          'title': newsItem.title,
+          'description': newsItem.body,
+          'source': 'DAA',
+          'publishedAt': newsItem.publishedAt,
+          'tags': newsItem.tags,
+          'about': newsItem.about
+        };
+      }).toList());
+      newItemsBuffer = newItems;
     });
   }
 
@@ -78,6 +139,7 @@ class _NewsScreenState extends State<NewsScreen> {
     var posts = await PostsService.fetchFanPagePosts();
 
     setState(() {
+      pageNumber = 0;
       newItems = posts.map((post) {
         return {
           'title': post.description,
@@ -85,9 +147,11 @@ class _NewsScreenState extends State<NewsScreen> {
           'source': 'Facebook',
           'publishedAt': post.createdTime,
           'imageUrl': post.fullPicture,
-          'about': 'No about'
+          'about': 'No about',
+          'tags': post.tags
         };
       }).toList();
+      postItemsBuffer = newItems;
     });
   }
 
@@ -99,7 +163,7 @@ class _NewsScreenState extends State<NewsScreen> {
       case 'DAA':
         fetchNews();
         break;
-      case 'CNPM - se.uit.edu.vn':
+      case 'SeExpress':
         fetchPosts();
         break;
       case 'Sự kiện':
@@ -111,6 +175,43 @@ class _NewsScreenState extends State<NewsScreen> {
       default:
         fetchNews();
     }
+  }
+
+  // Filter implementation
+  String selectedTag = 'Tất cả';
+
+  void onTagChange(String value) {
+    setState(() {
+      filterOption = value;
+      switch (_selectedSource) {
+        case 'DAA':
+          filterNews(value);
+          break;
+        case 'SeExpress':
+          filterPosts(value);
+          break;
+        default:
+          filterNews(value);
+      }
+    });
+  }
+
+  void filterNews(String value) {
+    if (value == 'Tất cả') {
+      newItems = newItemsBuffer;
+      return;
+    }
+    newItems =
+        newItemsBuffer.where((item) => item['tags'].contains(value)).toList();
+  }
+
+  void filterPosts(String value) {
+    if (value == 'Tất cả') {
+      newItems = postItemsBuffer;
+      return;
+    }
+    newItems =
+        postItemsBuffer.where((item) => item['tags'].contains(value)).toList();
   }
 
   @override
@@ -127,9 +228,13 @@ class _NewsScreenState extends State<NewsScreen> {
               const SizedBox(
                 width: 16,
               ),
-              ...tagItems.map((item) => TagBox(
-                    icon: item['icon'] as IconData,
-                    tagTitle: item['tagTitle'] as String,
+              ...tagItems.map((item) => GestureDetector(
+                    onTap: () => onTagChange(item['tagTitle'] as String),
+                    child: TagBox(
+                      icon: item['icon'] as IconData,
+                      tagTitle: item['tagTitle'] as String,
+                      isSelected: filterOption == item['tagTitle'],
+                    ),
                   )),
             ]),
           ),
@@ -182,8 +287,10 @@ class _NewsScreenState extends State<NewsScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListView.builder(
+                controller: _scrollController,
                 scrollDirection: Axis.vertical,
-                itemCount: newItems.length * 2, // Double the count for dividers
+                itemCount: newItems.length * 2 +
+                    1, // Double the count for dividers and 1 for loading
                 itemBuilder: (context, index) {
                   if (index.isOdd) {
                     return const FractionallySizedBox(
@@ -194,6 +301,25 @@ class _NewsScreenState extends State<NewsScreen> {
                       ),
                     );
                   }
+                  if (index == newItems.length * 2 && isLoading) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  if (index == newItems.length * 2 && !isLoading) {
+                    return const SizedBox();
+                  }
                   final itemIndex = index ~/ 2;
                   final item = newItems[itemIndex];
                   return Padding(
@@ -201,9 +327,10 @@ class _NewsScreenState extends State<NewsScreen> {
                     child: NewsTile(
                       title: item['title'] as String,
                       description: item['description'] as String ?? '',
-                      imageUrl: item['imageUrl'] ,
+                      imageUrl: item['imageUrl'],
                       source: item['source'] as String,
                       publishedAt: item['publishedAt'] as String,
+                      tags: item['tags'],
                       about: item['about'] as String,
                     ),
                   );

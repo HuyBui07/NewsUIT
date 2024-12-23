@@ -12,7 +12,7 @@ class DeadlineItem extends StatefulWidget {
   final String status; // New status parameter
 
   // Attachment later
-  DeadlineItem({
+  const DeadlineItem({super.key, 
     required this.title,
     required this.classCode,
     required this.dueDate,
@@ -35,7 +35,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
     if (content.length <= length) {
       return content;
     }
-    return content.substring(0, length) + '...';
+    return '${content.substring(0, length)}...';
   }
 
   String formatDate(String date) {
@@ -78,8 +78,8 @@ class _DeadlineItemState extends State<DeadlineItem> {
               backgroundColor: widget.isDarkMode
                   ? DarkModeColors.background
                   : LightModeColors.background,
-              titlePadding: EdgeInsets.all(20),
-              contentPadding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              titlePadding: const EdgeInsets.all(20),
+              contentPadding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -93,7 +93,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'Due by ${formatDate(widget.dueDate)}',
                     style: GoogleFonts.roboto(
@@ -104,7 +104,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       Text(
@@ -132,7 +132,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 150,
                       child: SingleChildScrollView(
                         child: Text(
@@ -196,7 +196,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                   ],
                 ),
               ),
-              actionsPadding: EdgeInsets.all(10),
+              actionsPadding: const EdgeInsets.all(10),
               actions: [
                 TextButton(
                   child: Text(
@@ -259,7 +259,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                     ),
                   ],
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 // Row 2: Shortened content
                 Row(
                   children: [
@@ -283,7 +283,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                 )
               ],
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Column(
               children: [
                 // Row 3: Status and Due date
@@ -297,7 +297,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                           size: 12,
                           color: statusColor,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           widget.status,
                           style: TextStyle(

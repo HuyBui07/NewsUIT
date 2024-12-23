@@ -8,7 +8,7 @@ class NewsDetailsScreen extends StatefulWidget {
   final String publishedAt;
   final String about;
 
-  NewsDetailsScreen({
+  const NewsDetailsScreen({super.key, 
     required this.title,
     required this.publishedAt,
     required this.about,
@@ -39,7 +39,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
         future: content,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -51,12 +51,12 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
                   children: [
                     Text(
                       widget.title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     
                     HtmlWidget(
                       snapshot.data!,
