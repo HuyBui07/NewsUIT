@@ -1,19 +1,13 @@
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dio/dio.dart';
-import '../utils/junk.dart';
-import '../apiControllers/deadlineFetch.dart';
+import 'package:news_uit/apiControllers/deadlineFetch.dart';
+import 'package:news_uit/utils/junk.dart';
 
-//Testing login screen, remove later.
 class PopupLogin extends StatefulWidget {
   final Function afterLogin;
 
-  const PopupLogin({super.key, required this.afterLogin});
+  const PopupLogin({required this.afterLogin, Key? key}) : super(key: key);
 
   @override
   _PopupLoginState createState() => _PopupLoginState();
@@ -22,72 +16,34 @@ class PopupLogin extends StatefulWidget {
 class _PopupLoginState extends State<PopupLogin> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _loading = false; // State to show loading
-  String _error = ''; // To hold error messages
-  String _successMessage = ''; // To hold success message
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<bool> login() async {
-    setState(() {
-      _loading = true; // Start loading
-      _error = ''; // Reset error message
-      _successMessage = ''; // Reset success message
-    });
-
-    bool success = false;
-
-    try {
-      // Assume LoginSample returns a boolean indicating success
-      success = await LoginSample();
-      if (success) {
-        setState(() {
-          _successMessage = 'Login successful!'; // Display success message
-        });
-      } else {
-        setState(() {
-          _error = 'Login failed. Please try again.';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'An error occurred: $e';
-      });
-    } finally {
-      setState(() {
-        _loading = false; // Stop loading
-      });
-    }
-
-    return success;
-  }
+  bool _loading = false;
+  String _error = '';
+  String _successMessage = '';
 
   Future<bool> loginWithTypedCredentials() async {
     setState(() {
-      _loading = true; // Start loading
-      _error = ''; // Reset error message
-      _successMessage = ''; // Reset success message
+      _loading = true;
+      _error = '';
+      _successMessage = '';
     });
 
     bool success = false;
 
     try {
-      // Assume LoginSample2 returns a boolean indicating success
-      success = await LoginSample2(
+      success = await DeadlineService().login(
         _usernameController.text,
         _passwordController.text,
+        storeCredentials: true,
       );
       if (success) {
         setState(() {
-          _successMessage =
-              'Login successful with typed credentials!'; // Display success message
+          _successMessage = 'Login successful!';
         });
+        widget.afterLogin(); // Notify parent widget of successful login
+        Future.microtask(() => Navigator.of(context).pop());
       } else {
         setState(() {
-          _error = 'Login failed. Please try again.';
+          _error = 'Invalid username or password.';
         });
       }
     } catch (e) {
@@ -96,7 +52,7 @@ class _PopupLoginState extends State<PopupLogin> {
       });
     } finally {
       setState(() {
-        _loading = false; // Stop loading
+        _loading = false;
       });
     }
 
@@ -105,57 +61,72 @@ class _PopupLoginState extends State<PopupLogin> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text('Login',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      content: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Username'),
+              decoration: InputDecoration(
+                labelText: 'Username',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                prefixIcon: Icon(Icons.person),
+              ),
             ),
+            SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                prefixIcon: Icon(Icons.lock),
+              ),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
-            _loading
-                ? const CircularProgressIndicator() // Show loading indicator
-                : ElevatedButton(
-                    onPressed: () async {
-                      bool success = await login();
-                      if (success) {
-                        widget.afterLogin(); // Call after login if successful
-                      }
-                    },
-                    child: const Text('Login with set credentials in CODE'),
-                  ),
-            if (_error.isNotEmpty)
-              Text(_error, style: const TextStyle(color: Colors.red)),
-            if (_successMessage.isNotEmpty)
-              Text(_successMessage, style: const TextStyle(color: Colors.green)),
-            // Log in with typed credentials
-            _loading
-                ? const CircularProgressIndicator() // Show loading indicator
-                : ElevatedButton(
-                    onPressed: () async {
-                      bool success = await loginWithTypedCredentials();
-                      if (success) {
-                        widget.afterLogin(); // Call after login if successful
-                      }
-                    },
-                    child: const Text('Log in with cred typed'),
-                  ),
-            if (_error.isNotEmpty)
-              Text(_error, style: const TextStyle(color: Colors.red)),
-            if (_successMessage.isNotEmpty)
-              Text(_successMessage, style: const TextStyle(color: Colors.green)),
-            const SizedBox(height: 20),
+            if (_error.isNotEmpty) ...[
+              SizedBox(height: 16),
+              Text(_error, style: TextStyle(color: Colors.red)),
+            ],
+            if (_successMessage.isNotEmpty) ...[
+              SizedBox(height: 16),
+              Text(_successMessage, style: TextStyle(color: Colors.green)),
+            ],
           ],
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _loading
+              ? null
+              : () async {
+                  await loginWithTypedCredentials();
+                },
+          child: _loading
+              ? SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Text('Login'),
+          style: ElevatedButton.styleFrom(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ],
     );
   }
 }

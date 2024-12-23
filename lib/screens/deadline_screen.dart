@@ -58,7 +58,7 @@ class _DeadlineScreenState extends State<DeadlineScreen> {
     });
 
     var deadlineService = DeadlineService();
-    var res = await deadlineService.fetchDeadlines(currentMonth,
+    var res = await deadlineService.fetchDeadlines(currentMonth, currentYear,
         checkSubmission: checkForSubmitStatus);
 
     setState(() {

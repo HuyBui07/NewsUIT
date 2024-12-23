@@ -29,6 +29,7 @@ class DeadlineItem extends StatefulWidget {
 class _DeadlineItemState extends State<DeadlineItem> {
   final int ShortTitleLength = 15;
   final int ShortContentLength = 50;
+  final int ShortClassCodeLength = 15;
 
   String shortenContent(String content, int length) {
     if (content.length <= length) {
@@ -147,50 +148,51 @@ class _DeadlineItemState extends State<DeadlineItem> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Attachments:',
-                          style: GoogleFonts.roboto(
-                            color: widget.isDarkMode
-                                ? DarkModeColors.commonHeaderText
-                                : LightModeColors.commonHeaderText,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            // Handle file download
-                          },
-                          child: Text(
-                            'File122.pptx',
-                            style: GoogleFonts.roboto(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        GestureDetector(
-                          onTap: () {
-                            // Handle file download
-                          },
-                          child: Text(
-                            'File2.sql',
-                            style: GoogleFonts.roboto(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    SizedBox(height: 20),
+                    // Old attachment, may not need
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Text(
+                    //       'Attachments:',
+                    //       style: GoogleFonts.roboto(
+                    //         color: widget.isDarkMode
+                    //             ? DarkModeColors.commonHeaderText
+                    //             : LightModeColors.commonHeaderText,
+                    //         fontWeight: FontWeight.w600,
+                    //         fontSize: 14,
+                    //       ),
+                    //     ),
+                    //     SizedBox(height: 10),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         // Handle file download
+                    //       },
+                    //       child: Text(
+                    //         'File122.pptx',
+                    //         style: GoogleFonts.roboto(
+                    //           color: Colors.blue,
+                    //           decoration: TextDecoration.underline,
+                    //           fontSize: 14,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     SizedBox(height: 5),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         // Handle file download
+                    //       },
+                    //       child: Text(
+                    //         'File2.sql',
+                    //         style: GoogleFonts.roboto(
+                    //           color: Colors.blue,
+                    //           decoration: TextDecoration.underline,
+                    //           fontSize: 14,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -246,7 +248,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                       ),
                     ),
                     Text(
-                      widget.classCode,
+                      shortenContent(widget.classCode, ShortClassCodeLength),
                       style: GoogleFonts.sourceCodePro(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

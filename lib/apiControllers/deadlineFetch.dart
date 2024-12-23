@@ -109,6 +109,7 @@ class DeadlineService {
         print('Login failed');
         return false;
       }
+      print("Login function: logged in is true");
 
       // Store credentials if requested
       if (storeCredentials) {
@@ -160,7 +161,7 @@ class DeadlineService {
   }
 
   // Fetch deadlines for a given month
-  Future<List<Map<String, dynamic>>> fetchDeadlines(int month,
+  Future<List<Map<String, dynamic>>> fetchDeadlines(int month, int year,
       {bool checkSubmission = false}) async {
     await _ensureInitialized(); // Ensure the service is initialized
     try {
@@ -171,13 +172,12 @@ class DeadlineService {
       }
 
       final sessKey = await _fetchSessionKey();
-      final currentYear = DateTime.now().year;
 
       final url =
           '$baseUrl/lib/ajax/service.php?sesskey=$sessKey&info=core_calendar_get_calendar_monthly_view';
 
       final args = {
-        'year': currentYear.toString(),
+        'year': year.toString(),
         'month': month.toString(),
         'day': 1,
         'view': 'monthblock'
@@ -213,7 +213,7 @@ class DeadlineService {
               'description': htmlDescriptionToText(event['description']),
               'timestamp': event['timesort'],
               'submitted': "Not checked", // Initialize submitted status
-              'year': currentYear,
+              'year': year,
               'month': month,
               'day': day['mday'],
               'url': event['url'],
@@ -306,5 +306,13 @@ class DeadlineService {
     if (username != null && password != null) {
       await login(username, password);
     }
+  }
+
+  // Clear stored credentials and logout
+  Future<void> _logoutAndClearCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('moodleUsername');
+    prefs.remove('moodlePassword');
+    await logout();
   }
 }
