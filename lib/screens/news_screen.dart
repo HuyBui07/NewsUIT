@@ -146,7 +146,7 @@ class _NewsScreenState extends State<NewsScreen> {
           'description': '',
           'source': 'Facebook',
           'publishedAt': post.createdTime,
-          'imageUrl': post.fullPicture,
+          'images': post.images,
           'about': 'No about',
           'tags': post.tags
         };
@@ -327,7 +327,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     child: NewsTile(
                       title: item['title'] as String,
                       description: item['description'] as String ?? '',
-                      imageUrl: item['imageUrl'],
+                      images: item['images'],
                       source: item['source'] as String,
                       publishedAt: item['publishedAt'] as String,
                       tags: item['tags'],

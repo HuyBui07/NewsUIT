@@ -26,6 +26,7 @@ dependencies:
   shelf_router: ^1.1.4
   intl: ^0.19.0
   flutter_linkify: ^6.0.0
+  flutter_carousel_widget: 
 
 dev_dependencies:
   flutter_test:
