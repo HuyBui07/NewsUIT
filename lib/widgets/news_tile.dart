@@ -11,6 +11,7 @@ class NewsTile extends StatefulWidget {
   final String title;
   final String description;
   final List<String>? images;
+  final String? video;
   final String source;
   final String publishedAt;
   final List<String>? tags;
@@ -21,6 +22,7 @@ class NewsTile extends StatefulWidget {
     required this.title,
     required this.description,
     this.images,
+    this.video,
     required this.source,
     required this.publishedAt,
     required this.tags,
@@ -86,6 +88,7 @@ class _NewsTileState extends State<NewsTile> {
                 description: widget.title,
                 date: widget.publishedAt,
                 images: widget.images!,
+                video: widget.video,
               ),
             ),
           );

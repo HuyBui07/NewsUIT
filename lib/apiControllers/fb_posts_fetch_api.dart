@@ -7,12 +7,14 @@ class Posts {
   final String description;
   final String createdTime;
   final List<String> images;
+  final String video;
   final List<String> tags;
 
   Posts({
     required this.description,
     required this.createdTime,
     required this.images,
+    this.video = '',
     this.tags = const [],
   });
 
@@ -57,6 +59,7 @@ class PostsService {
         String description = post['message'] ?? 'No description';
         List<String> tags = categorizeNew(description);
         List<String> images = [];
+        String video = '';
         if (post['attachments']['data'][0]['subattachments'] != null) {
           List<dynamic> subAttachments =
               post['attachments']['data'][0]['subattachments']['data'];
@@ -73,10 +76,17 @@ class PostsService {
         }
 
         images.add(post['full_picture']);
+
+        if (post['attachments']['data'][0]['media']['source'] != null) {
+          video = post['attachments']['data'][0]['media']['source'];
+          print("Has video" + video);
+        } 
+
         return Posts(
           description: description,
           createdTime: formattedDate,
           images: images,
+          video: video,
           tags: tags,
         );
       }).toList();

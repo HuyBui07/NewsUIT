@@ -147,6 +147,7 @@ class _NewsScreenState extends State<NewsScreen> {
           'source': 'Facebook',
           'publishedAt': post.createdTime,
           'images': post.images,
+          'video': post.video,
           'about': 'No about',
           'tags': post.tags
         };
@@ -328,6 +329,7 @@ class _NewsScreenState extends State<NewsScreen> {
                       title: item['title'] as String,
                       description: item['description'] as String ?? '',
                       images: item['images'],
+                      video: item['video'],
                       source: item['source'] as String,
                       publishedAt: item['publishedAt'] as String,
                       tags: item['tags'],
