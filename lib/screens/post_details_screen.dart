@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 
 class PostDetailsScreen extends StatelessWidget {
   final String description;
   final String date;
-  final String imageUrl;
+  final List<String> images;
 
-  const PostDetailsScreen({super.key, 
+  const PostDetailsScreen({
+    super.key,
     required this.description,
     required this.date,
-    required this.imageUrl,
+    required this.images,
   });
 
   // Function to open the URL
@@ -55,7 +57,32 @@ class PostDetailsScreen extends StatelessWidget {
                     decoration: TextDecoration.underline,
                   )),
               const SizedBox(height: 16),
-              Image.network(imageUrl),
+              FlutterCarousel(
+                options: FlutterCarouselOptions(
+                  height: 400.0,
+                  enableInfiniteScroll: true,
+                  showIndicator: true,
+                  slideIndicator: CircularSlideIndicator(),
+                  viewportFraction: 1.0,
+                ),
+                items: images.map((imageUrl) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                        ),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              )
             ],
           ),
         ),

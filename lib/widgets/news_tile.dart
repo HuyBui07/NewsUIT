@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NewsTile extends StatefulWidget {
   final String title;
   final String description;
-  final String? imageUrl;
+  final List<String>? images;
   final String source;
   final String publishedAt;
   final List<String>? tags;
@@ -20,7 +20,7 @@ class NewsTile extends StatefulWidget {
     super.key,
     required this.title,
     required this.description,
-    this.imageUrl,
+    this.images,
     required this.source,
     required this.publishedAt,
     required this.tags,
@@ -85,7 +85,7 @@ class _NewsTileState extends State<NewsTile> {
               builder: (context) => PostDetailsScreen(
                 description: widget.title,
                 date: widget.publishedAt,
-                imageUrl: widget.imageUrl!,
+                images: widget.images!,
               ),
             ),
           );
@@ -109,12 +109,12 @@ class _NewsTileState extends State<NewsTile> {
           margin: const EdgeInsets.only(bottom: 8.0),
           padding: const EdgeInsets.all(8.0),
           child: Row(children: [
-            if (widget.imageUrl != null) ...[
+            if (widget.images != null) ...[
               ClipRRect(
                 borderRadius:
                     BorderRadius.circular(24.0), // Set the border radius
                 child: Image.network(
-                  widget.imageUrl!, // Replace with your image URL
+                  widget.images![0], // Replace with your image URL
                   width: 80.0, // Set the width of the image
                   height: 120.0, // Set the height of the image
                   fit: BoxFit.cover, // Adjust the image to cover the box

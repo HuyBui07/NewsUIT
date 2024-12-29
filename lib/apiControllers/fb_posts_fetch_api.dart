@@ -6,13 +6,13 @@ import 'package:news_uit/utils/categorizeNews.dart';
 class Posts {
   final String description;
   final String createdTime;
-  final String fullPicture;
+  final List<String> images;
   final List<String> tags;
 
   Posts({
     required this.description,
     required this.createdTime,
-    required this.fullPicture,
+    required this.images,
     this.tags = const [],
   });
 
@@ -20,7 +20,7 @@ class Posts {
     return Posts(
       description: json['description'],
       createdTime: json['created_time'],
-      fullPicture: json['full_picture'],
+      images: json['images'],
       tags: json['tags'],
     );
   }
@@ -44,9 +44,8 @@ class PostsService {
     var pageId = "431464436719562";
 
     final url =
-        'https://graph.facebook.com/$pageId/posts?fields=message,full_picture, created_time&access_token=$accessToken';
+        'https://graph.facebook.com/$pageId/posts?fields=message,full_picture,created_time,attachments&access_token=$accessToken';
     final response = await http.get(Uri.parse(url));
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -57,10 +56,27 @@ class PostsService {
         String formattedDate = DateFormat('dd/MM/yyyy').format(createdTime);
         String description = post['message'] ?? 'No description';
         List<String> tags = categorizeNew(description);
+        List<String> images = [];
+        if (post['attachments']['data'][0]['subattachments'] != null) {
+          List<dynamic> subAttachments =
+              post['attachments']['data'][0]['subattachments']['data'];
+          images = subAttachments.map((subAttachment) {
+            return subAttachment['media']['image']['src'].toString();
+          }).toList();
+
+          return Posts(
+            description: description,
+            createdTime: formattedDate,
+            images: images,
+            tags: tags,
+          );
+        }
+
+        images.add(post['full_picture']);
         return Posts(
           description: description,
           createdTime: formattedDate,
-          fullPicture: post['full_picture'] ?? 'No image',
+          images: images,
           tags: tags,
         );
       }).toList();
