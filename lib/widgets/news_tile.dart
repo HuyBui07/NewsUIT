@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:news_uit/screens/detail_screens/se_details_screen.dart';
 
 import 'news_tag.dart';
 
-import '../screens/news_details_screen.dart';
-import '../screens/post_details_screen.dart';
+import '../screens/detail_screens/news_details_screen.dart';
+import '../screens/detail_screens/post_details_screen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,7 @@ class NewsTile extends StatefulWidget {
   final String title;
   final String description;
   final List<String>? images;
+  final String? video;
   final String source;
   final String publishedAt;
   final List<String>? tags;
@@ -21,6 +23,7 @@ class NewsTile extends StatefulWidget {
     required this.title,
     required this.description,
     this.images,
+    this.video,
     required this.source,
     required this.publishedAt,
     required this.tags,
@@ -86,6 +89,17 @@ class _NewsTileState extends State<NewsTile> {
                 description: widget.title,
                 date: widget.publishedAt,
                 images: widget.images!,
+                video: widget.video,
+              ),
+            ),
+          );
+        } else if (widget.source == 'SeUIT') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SeDetailsScreen(
+                url: widget.about,
+                title: widget.title,
               ),
             ),
           );
@@ -106,7 +120,7 @@ class _NewsTileState extends State<NewsTile> {
             ),
           ),
         Container(
-          margin: const EdgeInsets.only(bottom: 8.0),
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
           padding: const EdgeInsets.all(8.0),
           child: Row(children: [
             if (widget.images != null) ...[
@@ -132,7 +146,7 @@ class _NewsTileState extends State<NewsTile> {
                       // Adjust the height to fit 2 lines of text
                       child: Text(
                         widget.title,
-                        maxLines: 2, // Limit the title to 2 lines
+                        maxLines: 3, // Limit the title to 2 lines
                         overflow: TextOverflow
                             .ellipsis, // Handle overflow with ellipsis
                         style: const TextStyle(
@@ -142,8 +156,8 @@ class _NewsTileState extends State<NewsTile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8.0),
                     if (widget.description.isNotEmpty) ...[
+                      const SizedBox(height: 8.0),
                       Text(
                         widget.description,
                         style: const TextStyle(
@@ -151,42 +165,52 @@ class _NewsTileState extends State<NewsTile> {
                           fontSize: 14.0,
                         ),
                       ),
+                    ],
+                    if (widget.publishedAt != "" ||
+                        (widget.tags != null &&
+                            widget.tags!.isNotEmpty &&
+                            widget.tags![0] != "")) ...[
+                      const SizedBox(height: 8.0),
+                      const SizedBox(
+                          height: 2.0,
+                          width: double.infinity,
+                          child: Divider(
+                            color: Color(0xffE6E6E6),
+                            thickness: 2,
+                          )),
                       const SizedBox(height: 8.0),
                     ],
-                    const SizedBox(
-                        height: 2.0,
-                        width: double.infinity,
-                        child: Divider(
-                          color: Color(0xffE6E6E6),
-                          thickness: 2,
-                        )),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time,
-                          color: Colors.grey,
-                          size: 14.0,
-                        ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          widget.publishedAt,
-                          style: const TextStyle(
+                    if (widget.publishedAt != "") ...[
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.access_time,
                             color: Colors.grey,
-                            fontSize: 12.0,
+                            size: 14.0,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: List.generate(widget.tags?.length ?? 0, (index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: NewsTag(title: widget.tags![index]),
-                        );
-                      }),
-                    )
+                          const SizedBox(width: 4.0),
+                          Text(
+                            widget.publishedAt,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                    ],
+                    if (widget.tags != null &&
+                        widget.tags!.isNotEmpty &&
+                        widget.tags![0] != "")
+                      Row(
+                        children: List.generate(widget.tags!.length, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: NewsTag(title: widget.tags![index]),
+                          );
+                        }),
+                      )
                   ],
                 ),
               ),
