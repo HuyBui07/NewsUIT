@@ -28,6 +28,7 @@ dependencies:
   flutter_linkify: ^6.0.0
   flutter_carousel_widget: 
   video_player: ^2.9.2
+  dart_openai: ^5.1.0
 
 dev_dependencies:
   flutter_test:

@@ -39,29 +39,85 @@ class _NewsScreenState extends State<NewsScreen> {
       'tagTitle': 'Tất cả',
     },
     {
-      'icon': Icons.star,
+      'icon': Icons.menu_book,
       'tagTitle': 'Học vụ',
     },
     {
-      'icon': Icons.new_releases,
+      'icon': Icons.work,
       'tagTitle': 'Tuyển dụng',
     },
     {
-      'icon': Icons.star,
+      'icon': Icons.new_releases,
       'tagTitle': 'Thông báo',
     },
     {
-      'icon': Icons.star,
+      'icon': Icons.event,
       'tagTitle': 'Sự kiện',
     },
     {'icon': Icons.star, 'tagTitle': 'Khác'}
   ];
 
+  List<Map<String, dynamic>> normalTagItems = [
+    {
+      'icon': Icons.star,
+      'tagTitle': 'Tất cả',
+    },
+    {
+      'icon': Icons.menu_book,
+      'tagTitle': 'Học vụ',
+    },
+    {
+      'icon': Icons.work,
+      'tagTitle': 'Tuyển dụng',
+    },
+    {
+      'icon': Icons.new_releases,
+      'tagTitle': 'Thông báo',
+    },
+    {
+      'icon': Icons.event,
+      'tagTitle': 'Sự kiện',
+    },
+    {'icon': Icons.star, 'tagTitle': 'Khác'}
+  ];
+
+  List<Map<String, dynamic>> newsUITTagItems = [
+    {
+      'icon': Icons.star,
+      'tagTitle': 'Tất cả',
+    },
+    {
+      'icon': Icons.menu_book,
+      'tagTitle': 'Học vụ',
+    },
+    {
+      'icon': Icons.work,
+      'tagTitle': 'Tuyển dụng',
+    },
+    {
+      'icon': Icons.code,
+      'tagTitle': 'KH & CN',
+    },
+    {
+      'icon': Icons.event,
+      'tagTitle': 'Sự kiện',
+    },
+    {
+      'icon': Icons.emoji_events,
+      'tagTitle': 'Thành tích SV',
+    },
+    {
+      'icon': Icons.directions_run,
+      'tagTitle': 'Hoạt động SV',
+    },
+    {'icon': Icons.star, 'tagTitle': 'Khác'}
+  ];
 
   late String filterOption;
   int pageNumber = 0;
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
+  bool endOfNews = false;
 
   @override
   void initState() {
@@ -70,15 +126,20 @@ class _NewsScreenState extends State<NewsScreen> {
     fetchNews();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+              _scrollController.position.maxScrollExtent &&
+          !endOfNews) {
         if (_selectedSource == 'SeExpress') {
           return;
         }
         pageNumber++;
-        isLoading = true;
+        setState(() {
+          isLoading = true;
+        });
         fetchMoreNews();
       } else {
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       }
     });
   }
@@ -111,25 +172,126 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   void fetchMoreNews() async {
-    if (_selectedSource != 'DAA') {
-      return;
+    if (_selectedSource == 'DAA') {
+      var news = await NewsService.fetchNews(pageNumber);
+      if (news.isEmpty) {
+        setState(() {
+          endOfNews = true;
+          isLoading = false;
+        });
+        return;
+      }
+
+      setState(() {
+        if (filterOption == 'Tất cả') {
+          newItems.addAll(news.map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'DAA',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+          newItemsBuffer = newItems;
+        } else {
+          newItems.addAll(news
+              .where((item) => item.tags.contains(filterOption))
+              .map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'DAA',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+          newItemsBuffer.addAll(news.map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'DAA',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+        }
+      });
     }
 
-    var news = await NewsService.fetchNews(pageNumber);
+    if (_selectedSource == 'SeUIT') {
+      var uitNews = await NewsService.fetchUITNews("", pageNumber);
 
-    setState(() {
-      newItems.addAll(news.map((newsItem) {
-        return {
-          'title': newsItem.title,
-          'description': newsItem.body,
-          'source': 'DAA',
-          'publishedAt': newsItem.publishedAt,
-          'tags': newsItem.tags,
-          'about': newsItem.about
-        };
-      }).toList());
-      newItemsBuffer = newItems;
-    });
+      if (uitNews.isEmpty) {
+        setState(() {
+          endOfNews = true;
+          isLoading = false;
+        });
+        return;
+      }
+
+      setState(() {
+        if (filterOption == 'Tất cả') {
+          newItems.addAll(uitNews.map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'SeUIT',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+          newItemsBuffer = newItems;
+        } else {
+          newItems.addAll(uitNews
+              .where((item) => item.tags.contains(filterOption))
+              .map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'SeUIT',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+          newItemsBuffer.addAll(uitNews.map((newsItem) {
+            return {
+              'title': newsItem.title,
+              'description': newsItem.body,
+              'source': 'SeUIT',
+              'publishedAt': newsItem.publishedAt,
+              'tags': newsItem.tags,
+              'about': newsItem.about
+            };
+          }).toList());
+        }
+      });
+
+      for (var element in newItems) {
+        if (element['publishedAt'] == "") {
+          String time = await NewsService.fetchUITNewTime(element['about']);
+          time = time.replaceFirst("Được đăng: ", "");
+          setState(() {
+            element['publishedAt'] = time;
+          });
+        }
+      }
+
+      for (var element in newItemsBuffer) {
+        if (element['publishedAt'] == "") {
+          String time = await NewsService.fetchUITNewTime(element['about']);
+          time = time.replaceFirst("Được đăng: ", "");
+          setState(() {
+            element['publishedAt'] = time;
+          });
+        }
+      }
+    }
   }
 
   void fetchPosts() async {
@@ -139,7 +301,6 @@ class _NewsScreenState extends State<NewsScreen> {
     var posts = await PostsService.fetchFanPagePosts();
 
     setState(() {
-      pageNumber = 0;
       newItems = posts.map((post) {
         return {
           'title': post.description,
@@ -153,12 +314,53 @@ class _NewsScreenState extends State<NewsScreen> {
         };
       }).toList();
       postItemsBuffer = newItems;
+      tagItems = normalTagItems;
     });
   }
 
+  void fetchUITNews() async {
+    if (newItems.isNotEmpty) {
+      return;
+    }
+
+    var uitNews = await NewsService.fetchUITNews("", pageNumber);
+
+    setState(() {
+      newItems = uitNews.map((newsItem) {
+        return {
+          'title': newsItem.title,
+          'description': newsItem.body,
+          'source': 'SeUIT',
+          'publishedAt': newsItem.publishedAt,
+          'tags': newsItem.tags,
+          'about': newsItem.about
+        };
+      }).toList();
+
+      tagItems = newsUITTagItems;
+    });
+
+    for (var element in newItems) {
+      String time = await NewsService.fetchUITNewTime(element['about']);
+      time = time.replaceFirst("Được đăng: ", "");
+      setState(() {
+        element['publishedAt'] = time;
+      });
+    }
+    newItemsBuffer = newItems;
+  }
+
   void onSourceChange(String value) async {
-    setState(() => _selectedSource = value);
+    if (value == _selectedSource) {
+      return;
+    }
+    setState(() {
+      _selectedSource = value;
+      tagItems = normalTagItems;
+    });
+    pageNumber = 0;
     newItems = [];
+    endOfNews = false;
 
     switch (value) {
       case 'DAA':
@@ -167,11 +369,8 @@ class _NewsScreenState extends State<NewsScreen> {
       case 'SeExpress':
         fetchPosts();
         break;
-      case 'Sự kiện':
-        fetchNews();
-        break;
-      case 'Thông báo':
-        fetchNews();
+      case 'SeUIT':
+        fetchUITNews();
         break;
       default:
         fetchNews();
@@ -191,11 +390,16 @@ class _NewsScreenState extends State<NewsScreen> {
         case 'SeExpress':
           filterPosts(value);
           break;
+        case 'SeUIT':
+          filterUITNews(value);
+          break;
         default:
-          filterNews(value);
+          break;
       }
     });
   }
+
+  // filter functions
 
   void filterNews(String value) {
     if (value == 'Tất cả') {
@@ -213,6 +417,15 @@ class _NewsScreenState extends State<NewsScreen> {
     }
     newItems =
         postItemsBuffer.where((item) => item['tags'].contains(value)).toList();
+  }
+
+  void filterUITNews(String value) {
+    if (value == 'Tất cả') {
+      newItems = newItemsBuffer;
+      return;
+    }
+    newItems =
+        newItemsBuffer.where((item) => item['tags'].contains(value)).toList();
   }
 
   @override
@@ -302,21 +515,37 @@ class _NewsScreenState extends State<NewsScreen> {
                       ),
                     );
                   }
-                  if (index == newItems.length * 2 && isLoading) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.blue,
+                  if (index == newItems.length * 2) {
+                    if (endOfNews) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Đã hết tin tức',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
                             ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    }
+                    if (isLoading) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                   }
                   if (index == newItems.length * 2 && !isLoading) {
                     return const SizedBox();
