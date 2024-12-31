@@ -1,6 +1,6 @@
 name: news_uit
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -28,7 +28,6 @@ dependencies:
   flutter_linkify: ^6.0.0
   flutter_carousel_widget: 
   video_player: ^2.9.2
-  dart_openai: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +39,5 @@ flutter:
   assets:
     - lib/assets/qcdt.pdf
     - lib/assets/qtsv.pdf
+    - lib/assets/QuyDinhGiangVien.pdf
+    - lib/assets/QuyDinhNgoaiNgu_CLC_2021.pdf

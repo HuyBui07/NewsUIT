@@ -44,6 +44,16 @@ class _ChatWithPDFState extends State<ChatWithPDF>
       'sourceId': 'cha_bz1VXugmj4qpUq5ONz8hM',
       'pdfPath': 'lib/assets/qtsv.pdf'
     },
+    {
+      'title': 'Quy định giảng viên',
+      'sourceId': 'cha_vLQrocLBUqwWqBTFeilZh',
+      'pdfPath': 'lib/assets/QuyDinhGiangVien.pdf'
+    },
+    {
+      'title': 'Quy định ngoại ngữ - CLC - 2021',
+      'sourceId': 'cha_Dj7ynTbhDRMoiFiPFMbgz',
+      'pdfPath': 'lib/assets/QuyDinhNgoaiNgu_CLC_2021.pdf'
+    },
   ];
 
   @override
