@@ -128,9 +128,6 @@ class _NewsScreenState extends State<NewsScreen> {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
           !endOfNews) {
-        if (_selectedSource == 'SeExpress') {
-          return;
-        }
         pageNumber++;
         setState(() {
           isLoading = true;
@@ -148,27 +145,6 @@ class _NewsScreenState extends State<NewsScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void fetchNews() async {
-    if (newItems.isNotEmpty) {
-      return;
-    }
-    var news = await NewsService.fetchNews(pageNumber);
-
-    setState(() {
-      newItems = news.map((newsItem) {
-        return {
-          'title': newsItem.title,
-          'description': newsItem.body,
-          'source': 'DAA',
-          'publishedAt': newsItem.publishedAt,
-          'tags': newsItem.tags,
-          'about': newsItem.about
-        };
-      }).toList();
-      newItemsBuffer = newItems;
-    });
   }
 
   void fetchMoreNews() async {
@@ -220,6 +196,63 @@ class _NewsScreenState extends State<NewsScreen> {
           }).toList());
         }
       });
+    }
+
+    if (_selectedSource == "SeExpress") {
+      var morePosts = await PostsService.fetchNextPosts();
+      if (morePosts.isEmpty) {
+        setState(() {
+          endOfNews = true;
+          isLoading = false;
+        });
+        return;
+      }
+
+      setState(() {
+        if (filterOption == 'Tất cả') {
+          newItems.addAll(morePosts.map((post) {
+            return {
+              'title': post.description,
+              'description': '',
+              'source': 'Facebook',
+              'publishedAt': post.createdTime,
+              'images': post.images,
+              'video': post.video,
+              'about': 'No about',
+              'tags': post.tags
+            };
+          }).toList());
+          postItemsBuffer = newItems;
+        } else {
+          newItems.addAll(morePosts
+              .where((item) => item.tags.contains(filterOption))
+              .map((post) {
+            return {
+              'title': post.description,
+              'description': '',
+              'source': 'Facebook',
+              'publishedAt': post.createdTime,
+              'images': post.images,
+              'video': post.video,
+              'about': 'No about',
+              'tags': post.tags
+            };
+          }).toList());
+          postItemsBuffer.addAll(morePosts.map((post) {
+            return {
+              'title': post.description,
+              'description': '',
+              'source': 'Facebook',
+              'publishedAt': post.createdTime,
+              'images': post.images,
+              'video': post.video,
+              'about': 'No about',
+              'tags': post.tags
+            };
+          }).toList());
+        }
+      });
+      return;
     }
 
     if (_selectedSource == 'SeUIT') {
@@ -292,6 +325,27 @@ class _NewsScreenState extends State<NewsScreen> {
         }
       }
     }
+  }
+
+  void fetchNews() async {
+    if (newItems.isNotEmpty) {
+      return;
+    }
+    var news = await NewsService.fetchNews(pageNumber);
+
+    setState(() {
+      newItems = news.map((newsItem) {
+        return {
+          'title': newsItem.title,
+          'description': newsItem.body,
+          'source': 'DAA',
+          'publishedAt': newsItem.publishedAt,
+          'tags': newsItem.tags,
+          'about': newsItem.about
+        };
+      }).toList();
+      newItemsBuffer = newItems;
+    });
   }
 
   void fetchPosts() async {
@@ -555,7 +609,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: NewsTile(
-                      title: item['title'] as String,
+                      title: (item['title'] as String),
                       description: item['description'] as String ?? '',
                       images: item['images'],
                       video: item['video'],

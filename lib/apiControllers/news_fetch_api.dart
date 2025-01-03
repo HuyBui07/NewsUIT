@@ -72,7 +72,7 @@ class NewsService {
         );
       }).toList();
 
-      print('Fetched ${news.length} news articles');
+      print(news[0]);
       return news;
     } else {
       throw Exception('Failed to load news');
@@ -401,10 +401,10 @@ class NewsService {
     // Quét title và thêm tag tương ứng
     keywordTags.forEach((key, value) {
       for (var keyword in value) {
-      if (title.toLowerCase().contains(keyword.toLowerCase())) {
-        tag = key;
-        return;
-      }
+        if (title.toLowerCase().contains(keyword.toLowerCase())) {
+          tag = key;
+          return;
+        }
       }
     });
 

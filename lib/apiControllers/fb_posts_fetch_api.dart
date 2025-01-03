@@ -38,6 +38,9 @@ class PostsService {
     return _postsService;
   }
 
+  static String? nextUrl;
+  static var isFetching = false;
+
   static Future<List<Posts>> fetchFanPagePosts() async {
     print('Fetching posts');
     var accessToken =
@@ -46,7 +49,7 @@ class PostsService {
     var pageId = "431464436719562";
 
     final url =
-        'https://graph.facebook.com/$pageId/posts?fields=message,full_picture,created_time,attachments&access_token=$accessToken';
+        'https://graph.facebook.com/$pageId/posts?limit=5&fields=message,full_picture,created_time,attachments&access_token=$accessToken';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -80,7 +83,7 @@ class PostsService {
         if (post['attachments']['data'][0]['media']['source'] != null) {
           video = post['attachments']['data'][0]['media']['source'];
           print("Has video" + video);
-        } 
+        }
 
         return Posts(
           description: description,
@@ -91,8 +94,69 @@ class PostsService {
         );
       }).toList();
 
+      nextUrl = data['paging'] != null ? data['paging']['next'] : null;
+
       return posts;
     } else {
+      throw Exception('Failed to load posts');
+    }
+  }
+
+  static Future<List<Posts>> fetchNextPosts() async {
+    print('Fetching next posts');
+    if (nextUrl == null || isFetching) {
+      return [];
+    }
+    isFetching = true;
+    final response = await http.get(Uri.parse(nextUrl!));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      List<Posts> posts = (data['data'] as List).map((post) {
+        DateTime createdTime = DateTime.parse(post['created_time']);
+        // Format the DateTime object into a common date expression
+        String formattedDate = DateFormat('dd/MM/yyyy').format(createdTime);
+        String description = post['message'] ?? 'No description';
+        List<String> tags = categorizeNew(description);
+        List<String> images = [];
+        String video = '';
+        if (post['attachments']['data'][0]['subattachments'] != null) {
+          List<dynamic> subAttachments =
+              post['attachments']['data'][0]['subattachments']['data'];
+          images = subAttachments.map((subAttachment) {
+            return subAttachment['media']['image']['src'].toString();
+          }).toList();
+
+          return Posts(
+            description: description,
+            createdTime: formattedDate,
+            images: images,
+            tags: tags,
+          );
+        }
+
+        images.add(post['full_picture']);
+
+        if (post['attachments']['data'][0]['media']['source'] != null) {
+          video = post['attachments']['data'][0]['media']['source'];
+          print("Has video" + video);
+        }
+
+        return Posts(
+          description: description,
+          createdTime: formattedDate,
+          images: images,
+          video: video,
+          tags: tags,
+        );
+      }).toList();
+
+      nextUrl = data['paging'] != null ? data['paging']['next'] : null;
+      isFetching = false;
+      return posts;
+    } else {
+      isFetching = false;
       throw Exception('Failed to load posts');
     }
   }
