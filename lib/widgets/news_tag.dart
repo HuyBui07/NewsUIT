@@ -10,7 +10,7 @@ class NewsTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(

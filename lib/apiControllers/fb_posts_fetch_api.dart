@@ -49,7 +49,7 @@ class PostsService {
     var pageId = "431464436719562";
 
     final url =
-        'https://graph.facebook.com/$pageId/posts?limit=5&fields=message,full_picture,created_time,attachments&access_token=$accessToken';
+        'https://graph.facebook.com/$pageId/posts?limit=5&fields=id,message,full_picture,created_time,attachments&access_token=$accessToken';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -82,7 +82,6 @@ class PostsService {
 
         if (post['attachments']['data'][0]['media']['source'] != null) {
           video = post['attachments']['data'][0]['media']['source'];
-          print("Has video" + video);
         }
 
         return Posts(
@@ -103,7 +102,6 @@ class PostsService {
   }
 
   static Future<List<Posts>> fetchNextPosts() async {
-    print('Fetching next posts');
     if (nextUrl == null || isFetching) {
       return [];
     }
@@ -140,7 +138,6 @@ class PostsService {
 
         if (post['attachments']['data'][0]['media']['source'] != null) {
           video = post['attachments']['data'][0]['media']['source'];
-          print("Has video" + video);
         }
 
         return Posts(

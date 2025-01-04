@@ -148,7 +148,7 @@ class _DeadlineItemState extends State<DeadlineItem> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Old attachment, may not need
                     // Column(
                     //   crossAxisAlignment: CrossAxisAlignment.start,

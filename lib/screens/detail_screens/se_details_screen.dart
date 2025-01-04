@@ -2,28 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:news_uit/apiControllers/news_fetch_api.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:news_uit/providers/bookmarks_provider.dart';
 
 class SeDetailsScreen extends StatefulWidget {
   final String url;
   final String title;
+  final String publishedAt;
 
   const SeDetailsScreen({
     super.key,
     required this.url,
     required this.title,
+    required this.publishedAt,
   });
 
   @override
-  _NewsDetailsScreenState createState() => _NewsDetailsScreenState();
+  NewsDetailsScreenState createState() => NewsDetailsScreenState();
 }
 
-class _NewsDetailsScreenState extends State<SeDetailsScreen> {
+class NewsDetailsScreenState extends State<SeDetailsScreen> {
   late Future<String> content;
+  bool isBookmarked = false;
 
   @override
   void initState() {
     super.initState();
+    _checkBookmarked();
     content = NewsService.fetchUITNewsContent(widget.url);
+  }
+
+  Future<void> _checkBookmarked() async {
+    Map<String, dynamic> bookmark = {
+      'title': widget.title,
+      'description': "",
+      'source': "SeUIT",
+      'publishedAt': widget.publishedAt,
+      'tags': [],
+      'about': widget.url,
+    };
+    final bookmarksProvider =
+        Provider.of<BookmarksProvider>(context, listen: false);
+    setState(() {
+      isBookmarked = bookmarksProvider.isBookmarked(bookmark);
+    });
+  }
+
+  Future<void> _bookmark() async {
+    Map<String, dynamic> bookmark = {
+      'title': widget.title,
+      'description': "",
+      'source': "SeUIT",
+      'publishedAt': widget.publishedAt,
+      'tags': [],
+      'about': widget.url,
+    };
+    final bookmarksProvider =
+        Provider.of<BookmarksProvider>(context, listen: false);
+    if (isBookmarked) {
+      await bookmarksProvider.removeBookmark(bookmark);
+      setState(() {
+        isBookmarked = false;
+      });
+    } else {
+      await bookmarksProvider.addBookmark(bookmark);
+      setState(() {
+        isBookmarked = true;
+      });
+    }
   }
 
   @override
@@ -32,6 +78,17 @@ class _NewsDetailsScreenState extends State<SeDetailsScreen> {
       appBar: AppBar(
         title: const Text('THÔNG BÁO'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: isBookmarked
+                ? const Icon(Icons.turned_in)
+                : const Icon(Icons.turned_in_not),
+            iconSize: 30,
+            onPressed: () {
+              _bookmark();
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<String>(
         future: content,

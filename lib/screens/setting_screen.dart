@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
@@ -72,23 +72,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: Icon(Icons.brightness_6),
-              title: Text('Dark Mode'),
+              leading: const Icon(Icons.brightness_6),
+              title: const Text('Dark Mode'),
               trailing: Switch(
                 value: Theme.of(context).brightness == Brightness.dark,
                 onChanged: (value) => widget.toggleTheme(),
               ),
             ),
-            Divider(),
+            const Divider(),
             if (widget.isLoggedIn && username != null) ...[
               ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Logged in as:'),
+                leading: const Icon(Icons.person),
+                title: const Text('Logged in as:'),
                 subtitle: Text(username!),
               ),
               ListTile(
-                leading: Icon(Icons.logout),
-                title: Text('Logout'),
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
                 onTap: () async {
                   await widget.logout();
                   setState(() {
@@ -98,8 +98,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ] else
               ListTile(
-                leading: Icon(Icons.login),
-                title: Text('Login'),
+                leading: const Icon(Icons.login),
+                title: const Text('Login'),
                 onTap: () => widget.showLoginScreen(),
               ),
           ],
