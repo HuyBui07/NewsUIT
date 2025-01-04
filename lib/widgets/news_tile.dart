@@ -35,7 +35,7 @@ class NewsTile extends StatefulWidget {
 }
 
 class _NewsTileState extends State<NewsTile> {
-  bool isRead = false;
+  bool isRead = true;
 
   @override
   void initState() {
@@ -46,9 +46,9 @@ class _NewsTileState extends State<NewsTile> {
   void _checkRead() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> readNews = prefs.getStringList('readNews') ?? [];
-    if (readNews.contains(widget.title)) {
+    if (!readNews.contains(widget.title)) {
       setState(() {
-        isRead = true;
+        isRead = false;
       });
     }
   }
@@ -65,13 +65,17 @@ class _NewsTileState extends State<NewsTile> {
     }
   }
 
+  String getSingleLineTitle(String title) {
+    return title.split('\n').first;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         _markAsRead();
         if (widget.source == 'DAA') {
-          Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NewsDetailsScreen(
@@ -93,6 +97,7 @@ class _NewsTileState extends State<NewsTile> {
               ),
             ),
           );
+          
         } else if (widget.source == 'SeUIT') {
           Navigator.push(
             context,
@@ -100,6 +105,7 @@ class _NewsTileState extends State<NewsTile> {
               builder: (context) => SeDetailsScreen(
                 url: widget.about,
                 title: widget.title,
+                publishedAt: widget.publishedAt,
               ),
             ),
           );
@@ -150,7 +156,6 @@ class _NewsTileState extends State<NewsTile> {
                         overflow: TextOverflow
                             .ellipsis, // Handle overflow with ellipsis
                         style: const TextStyle(
-                          color: Colors.black,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),

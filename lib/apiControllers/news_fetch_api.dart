@@ -72,7 +72,6 @@ class NewsService {
         );
       }).toList();
 
-      print(news[0]);
       return news;
     } else {
       throw Exception('Failed to load news');
@@ -147,24 +146,24 @@ class NewsService {
         articles = tbody.getElementsByTagName('tr');
       }
 
-      List<News> news = articles.map((article) {
+      List<News> news = await Future.wait(articles.map((article) async {
         String url =
-            article.getElementsByTagName('a').first.attributes['href'] ?? '';
+        article.getElementsByTagName('a').first.attributes['href'] ?? '';
         String title = article.getElementsByTagName('a').first.text.trim();
         String tag = categorizeUITNew(title);
         print(url);
+        String publishedAt = await fetchUITNewTime(url);
 
         return News(
           id: url,
           title: title,
           body: "",
-          publishedAt: "",
+          publishedAt: publishedAt,
           tags: [tag],
           about: url,
         );
-      }).toList();
+      }).toList());
 
-      print('Fetched ${news.length} news articles from SeUIT');
       return news;
     } else {
       throw Exception('Failed to load news');

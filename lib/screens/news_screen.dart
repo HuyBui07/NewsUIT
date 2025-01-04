@@ -19,10 +19,10 @@ class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
 
   @override
-  _NewsScreenState createState() => _NewsScreenState();
+  NewsScreenState createState() => NewsScreenState();
 }
 
-class _NewsScreenState extends State<NewsScreen> {
+class NewsScreenState extends State<NewsScreen> {
   final List<DropdownMenuEntry<String>> dropDownMenuEntries =
       dropDownMenuSourceOptions
           .map((String option) => DropdownMenuEntry<String>(
@@ -394,13 +394,6 @@ class _NewsScreenState extends State<NewsScreen> {
       tagItems = newsUITTagItems;
     });
 
-    for (var element in newItems) {
-      String time = await NewsService.fetchUITNewTime(element['about']);
-      time = time.replaceFirst("Được đăng: ", "");
-      setState(() {
-        element['publishedAt'] = time;
-      });
-    }
     newItemsBuffer = newItems;
   }
 
@@ -584,22 +577,21 @@ class _NewsScreenState extends State<NewsScreen> {
                         ),
                       );
                     }
-                    if (isLoading) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blue,
-                              ),
+
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.blue,
                             ),
                           ),
                         ),
-                      );
-                    }
+                      ),
+                    );
                   }
                   if (index == newItems.length * 2 && !isLoading) {
                     return const SizedBox();

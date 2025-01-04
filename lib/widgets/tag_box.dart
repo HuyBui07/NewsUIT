@@ -30,7 +30,6 @@ class TagBox extends StatelessWidget {
           Text(
             tagTitle,
             style: const TextStyle(
-              color: Colors.black,
               fontSize: 16.0,
             ),
           ),
